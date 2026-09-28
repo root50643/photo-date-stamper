@@ -1,6 +1,12 @@
 # 自動化驗證紀錄
 
-本紀錄整理 2026-09-28 開發環境的已完成驗證，與 [手動驗證清單](manual-test.md) 分開追蹤。後續修改需重跑相關測試；本紀錄不代表已發布到 GitHub Pages。
+本紀錄整理 2026-09-28 開發環境的已完成驗證，與 [手動驗證清單](manual-test.md) 分開追蹤。後續修改需重跑相關測試。
+
+## GitHub 發布
+
+2026-09-28 已推送至 [root50643/photo-date-stamper](https://github.com/root50643/photo-date-stamper)。[首次 Pages 部署](https://github.com/root50643/photo-date-stamper/actions/runs/36376606475)成功，正式網站 [https://root50643.github.io/photo-date-stamper/](https://root50643.github.io/photo-date-stamper/) 回應 HTTP 200。
+
+首次 Linux CI 發現小尺寸 JPEG／WebP 的嚴格字色像素門檻受到有損編碼及平台抗鋸齒差異影響。格式／尺寸測試改用較大的字形，仍驗證 MIME、完整尺寸與黃色像素；預設字級、透明度、方向與日期排版由其他案例持續驗證。最新檢查結果以 [GitHub Actions](https://github.com/root50643/photo-date-stamper/actions) 為準。
 
 執行環境：Windows NT 10.0.26200.0、Chrome 153.0.8010.54、Microsoft Edge 153.0.4234.48。
 
@@ -30,13 +36,13 @@
 
 目錄案例透過 `navigator.storage.getDirectory()` 取得原生 OPFS handles，再讓 `showDirectoryPicker` 回傳測試用 handle。程式實際使用 File System Access API 讀寫瀏覽器私有檔案系統，並非純記憶體模擬；但測試**沒有操作 Windows 原生目錄選擇器，也沒有驗證 Windows 使用者目錄的授權與讀寫流程**。取消和拒絕授權案例由 stub 模擬錯誤。
 
-正式資源測試先使用 `pnpm build` 產生 `dist/`，再由 `scripts/serve-dist.mjs` 於 `http://127.0.0.1:4174/photo-date-stamper/` 提供網站，確認專案子路徑下可載入網頁、字型及 Worker。這是本機正式產物測試，**沒有執行 GitHub Actions 或 GitHub Pages 線上部署**。
+正式資源測試先使用 `pnpm build` 產生 `dist/`，再由 `scripts/serve-dist.mjs` 於 `http://127.0.0.1:4174/photo-date-stamper/` 提供網站，確認專案子路徑下可載入網頁、字型及 Worker。這項案例測試本機正式產物；GitHub Actions 與正式 Pages 的紀錄另見上方「GitHub 發布」。
 
 ## 待人工或部署環境驗證
 
 - Chrome／Edge 原生目錄選擇器、真實授權提示與拒絕後復原。
 - 使用者磁碟目錄實際輸出、磁碟空間不足、裝置中斷及權限撤銷。
 - 大量真實照片的記憶體走勢與長時間操作；真實相機樣本的人工品質比對。
-- GitHub Actions 執行、Pages 正式 HTTPS 網址及目錄讀寫驗收。
+- Pages 正式 HTTPS 網址上的原生目錄授權與真實磁碟讀寫驗收。
 
 人工檢查項目尚未逐一執行，因此手動清單保留未勾選狀態；這不會否定已通過的同類自動化測試，也不以自動化結果取代人工驗收。

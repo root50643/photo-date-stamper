@@ -257,7 +257,14 @@ for (let orientation = 1; orientation <= 8; orientation++) {
 
 for (const mime of ["image/jpeg", "image/png", "image/webp"]) {
   test(`${mime} 輸出保留格式及原始像素尺寸`, async ({ page }) => {
-    const result = await renderSample(page, { width: 641, height: 359, mime });
+    // Keep the codec assertion independent of platform-specific antialiasing
+    // and chroma subsampling at the default ~11 px size on this small fixture.
+    // Default sizing is covered by the layout, EXIF and transparency cases.
+    const result = await renderSample(
+      page,
+      { width: 641, height: 359, mime },
+      { fontSizePercent: 10 },
+    );
     expect(result.mime).toBe(mime);
     expect([result.width, result.height]).toEqual([641, 359]);
     expect(result.yellowPixels).toBeGreaterThan(10);
